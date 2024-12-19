@@ -4,41 +4,46 @@ import { useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { IoMdEyeOff } from "react-icons/io";
 const Register = () => {
-  const [registerError, setRegisterError] = useState(''); 
-  const [success , setSuccess] = useState('');
-  const [showPassword,setShowPassword] = useState(false);
+  const [registerError, setRegisterError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
 
   const handleRegister = (e) => {
     e.preventDefault(); // Prevent default form submission
     const email = e.target.email.value;
     const password = e.target.password.value;
-    console.log(email, password); // Log the email and password
+    const accepted = e.target.terms.checked
+    console.log(email, password,accepted); // Log the email and password
 
-    if(password.length < 6 ){
+    if (password.length < 6) {
       setRegisterError('Password Should be at least 6 Character');
     }
-    else if(!/[A-Z]/.test(password)){
+    else if (!/[A-Z]/.test(password)) {
       setRegisterError('Your Password Sould have at least one upper case');
       return;
 
     }
+    else if(!accepted){
+      setRegisterError('please accepted your terms and condition');
+      return;
+    }
 
     // Reset Error:
     setRegisterError('');
-    createUserWithEmailAndPassword(auth,email,password)
-    // reset error
-    // setRegisterError('');
-    .then(result =>{
-      console.log(result.user);
-      setSuccess('User Created Successfully')
-     
-    })
-    .catch(error =>{
-      console.error(error);
-      setRegisterError(error.message);
-    })
-    
+    createUserWithEmailAndPassword(auth, email, password)
+      // reset error
+      // setRegisterError('');
+      .then(result => {
+        console.log(result.user);
+        setSuccess('User Created Successfully')
+
+      })
+      .catch(error => {
+        console.error(error);
+        setRegisterError(error.message);
+      })
+
   };
 
   return (
@@ -63,19 +68,43 @@ const Register = () => {
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
             </label>
-            <input
-              type={showPassword ? "text": "password"}
-              name="password"
-              id="password"
-              required
-              className="w-full px-4 py-2 border rounded-md bg-red-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-              placeholder="Password"
-            />
-            <span onClick={() =>setShowPassword(!showPassword)}> 
-              {
-                showPassword ? <FaEye /> : <IoMdEyeOff />
-              }
-            </span>
+            {/* <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                id="password"
+                required
+                className="w-full px-4 py-2 border rounded-md bg-red-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+                placeholder="Password"
+              />
+              <span className="absolute" onClick={() => setShowPassword(!showPassword)}>
+                {
+                  showPassword ? <FaEye /> : <IoMdEyeOff />
+                }
+              </span>
+            </div> */}
+
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                id="password"
+                required
+                className="w-full px-4 py-2 pr-10 border rounded-md bg-red-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+                placeholder="Password"
+              />
+              <span
+                className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEye /> : <IoMdEyeOff />}
+              </span>
+            </div>
+            <br />
+            <input type="checkbox" name="terms" id="" />
+            <label htmlFor="terms">accept our <a href="">terms and condition</a></label>
+            <br />
+
           </div>
           <div>
             <input
